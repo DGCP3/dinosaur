@@ -1,32 +1,83 @@
+import DinoJson from "./dino.json";
 
-    // Create Dino Constructor
+/**
+ * Represents a Dino object.
+ * @constructor object
+ */
+class Dino {
+  constructor(args) {
+    Object.assign(this, args);
+  }
+  compareHeight(weight) {
+    return this.weight > weight;
+  }
+  compareWeight(weight) {
+    return this.weight > weight;
+  }
+}
+/**
+ * Represents a Person object.
+ * @constructor object
+ */
+class Person {
+  constructor(args) {
+    Object.assign(this, args);
+  }
+}
+(() => {
+  document.getElementById("dino-compare").addEventListener("submit", (e) => {
+    e.preventDefault();
+    toggle();
+    renderGrid();
+  });
 
+  document.getElementById("back").addEventListener("click", () => {
+    toggle();
+  });
+})();
+/**
+ * get user input from form and return object
+ * @constructor object
+ * @return { weight, height, name, diet }
+ */
+function getUserInput() {
+  const name = document.getElementById("name").value;
+  const feet = document.getElementById("feet").value;
+  const inch = document.getElementById("inches").value;
+  const weight = document.getElementById("weight").value;
+  const diet = document.getElementById("diet").value;
 
-    // Create Dino Objects
+  return { weight, height: feet * 12 + inch, name, diet };
+}
 
+function renderGrid(human) {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  const fragment = document.createDocumentFragment();
+  const collection = DinoJson.Dinos.map((dino) => {
+    return new Dino(dino);
+  });
+  collection.splice(4, 0, human);
+  collection.map((obj) => {
+    fragment.appendChild(createCard(obj));
+  });
+  grid.appendChild(fragment);
+}
 
-    // Create Human Object
+function createCard(obj) {
+  const card = document.createElement("div");
+  card.classList.add("grid-item");
+  card.innerHTML = `
+	<img src="/images/${String(obj?.species || "human").toLowerCase()}.png" alt="${
+    obj?.species
+  }">	
+		<h3>${obj?.species || obj?.name}</h3>
+`;
+  return card;
+}
 
-    // Use IIFE to get human data from form
-
-
-    // Create Dino Compare Method 1
-    // NOTE: Weight in JSON file is in lbs, height in inches. 
-
-    
-    // Create Dino Compare Method 2
-    // NOTE: Weight in JSON file is in lbs, height in inches.
-
-    
-    // Create Dino Compare Method 3
-    // NOTE: Weight in JSON file is in lbs, height in inches.
-
-
-    // Generate Tiles for each Dino in Array
-  
-        // Add tiles to DOM
-
-    // Remove form from screen
-
-
-// On button click, prepare and display infographic
+function toggle() {
+  document.getElementById("back").classList.toggle("d-none");
+  document.getElementById("dino-compare").classList.toggle("d-none");
+  grid.innerHTML = "";
+}
