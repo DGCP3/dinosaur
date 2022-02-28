@@ -36,7 +36,7 @@ class Person {
   });
 })();
 /**
- * get user input from form and return object
+ * get user input from form and return info as object
  * @constructor object
  * @return { weight, height, name, diet }
  */
@@ -59,7 +59,6 @@ function renderGrid() {
     return new Dino(dino);
   });
   collection.splice(4, 0, human);
-  console.log(human);
   collection.map((obj) => {
     fragment.appendChild(createCard(obj));
   });
@@ -74,6 +73,11 @@ function createCard(obj) {
     obj?.species
   }">	
 		<h3>${obj?.species || obj?.name}</h3>
+	${
+    (obj?.species === "Pigeon" && "<p>All birds are Dinosaurs.</p>") ||
+    obj?.fact ||
+    ""
+  }
 `;
   return card;
 }
