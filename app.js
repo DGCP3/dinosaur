@@ -50,14 +50,16 @@ function getUserInput() {
   return { weight, height: feet * 12 + inch, name, diet };
 }
 
-function renderGrid(human) {
+function renderGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   const fragment = document.createDocumentFragment();
+  const human = new Person(getUserInput());
   const collection = DinoJson.Dinos.map((dino) => {
     return new Dino(dino);
   });
   collection.splice(4, 0, human);
+  console.log(human);
   collection.map((obj) => {
     fragment.appendChild(createCard(obj));
   });
