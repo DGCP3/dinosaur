@@ -19,7 +19,7 @@ class Dino {
  * Represents a Person object.
  * @constructor object
  */
-class Person {
+class Human {
   constructor(args) {
     Object.assign(this, args);
   }
@@ -54,14 +54,16 @@ function renderGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   const fragment = document.createDocumentFragment();
-  const human = new Person(getUserInput());
+  const human = new Human(getUserInput());
   const collection = DinoJson.Dinos.map((dino) => {
     return new Dino(dino);
   });
   human.taller = collection
-    .filter((dino) => dino.compareHeight(human.height))
+    .filter((dino) => !dino.compareHeight(human.height))
     .map(({ species }) => species);
-  console.log(human.taller);
+  human.heavy = collection
+    .filter((dino) => !dino.compareWeight(human.weight))
+    .map(({ species }) => species);
   collection.splice(4, 0, human);
   collection.map((obj) => {
     fragment.appendChild(createCard(obj));
@@ -77,7 +79,23 @@ function createCard(obj) {
     obj?.species
   }">	
 		<h3>${obj?.species || obj?.name}</h3>
-	${(obj?.species === "Pigeon" && "<p>All birds are Dinosaurs.</p>") || obj?.fact}
+	${
+    (obj?.species === "Pigeon" && "<p>All birds are Dinosaurs.</p>") ||
+    obj?.fact ||
+    ""
+  }
+  ${
+    obj instanceof Human &&
+    `You are taller than ${
+      (obj.taller.length > 1 && obj.taller.join(", ")) || "none of them"
+    }`
+  }
+  ${
+    obj instanceof Human &&
+    `And heavier than ${
+      (obj.heavy.length > 1 && obj.heavy.join(", ")) || "none of them"
+    }`
+  }
 `;
   return card;
 }
