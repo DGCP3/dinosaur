@@ -1,4 +1,4 @@
-import DinoJson from "./dino.json";
+import DinoJson from "./dino.json" assert { type: "json" };
 
 /**
  * Represents a Dino object.
@@ -25,7 +25,7 @@ class Person {
   }
 }
 (() => {
-  document.getElementById("dino-compare").addEventListener("submit", (e) => {
+  document.getElementById("btn").addEventListener("click", (e) => {
     e.preventDefault();
     toggle();
     renderGrid();
@@ -58,6 +58,10 @@ function renderGrid() {
   const collection = DinoJson.Dinos.map((dino) => {
     return new Dino(dino);
   });
+  human.taller = collection
+    .filter((dino) => dino.compareHeight(human.height))
+    .map(({ species }) => species);
+  console.log(human.taller);
   collection.splice(4, 0, human);
   collection.map((obj) => {
     fragment.appendChild(createCard(obj));
@@ -73,11 +77,7 @@ function createCard(obj) {
     obj?.species
   }">	
 		<h3>${obj?.species || obj?.name}</h3>
-	${
-    (obj?.species === "Pigeon" && "<p>All birds are Dinosaurs.</p>") ||
-    obj?.fact ||
-    ""
-  }
+	${(obj?.species === "Pigeon" && "<p>All birds are Dinosaurs.</p>") || obj?.fact}
 `;
   return card;
 }
