@@ -187,3 +187,20 @@ select {
 .d-none {
   display: none;
 }
+/* tooltip */
+[data-info]::before {
+  content: attr(data-info);
+  position: absolute;
+  font-size: 1em;
+  text-align: center;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #30303040;
+  color: #fff;
+  padding: 0.5em 1em;
+  opacity: 0;
+  transition: all 0.4s ease-in-out;
+}
+[data-info]:hover::before {
+  opacity: 1;
+}
