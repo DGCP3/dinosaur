@@ -1,5 +1,4 @@
 import DinoJson from "./dino.json" assert { type: "json" };
-
 /**
  * Represents a Dino object.
  * @constructor object
@@ -14,6 +13,18 @@ class Dino {
   compareWeight(weight) {
     return this.weight > weight;
   }
+  createCard() {
+    const card = document.createElement("div");
+    card.classList.add("grid-item");
+    card.innerHTML = `
+    <img src="/images/${String(this.species).toLowerCase()}.png" alt="${
+      this.species
+    }">
+    <p>
+    ${(this.species === "Pigeon" && "All birds are Dinosaurs.") || this.fact}
+    </p>`;
+    return card;
+  }
 }
 /**
  * Represents a Person object.
@@ -22,19 +33,64 @@ class Dino {
 class Human {
   constructor(args) {
     Object.assign(this, args);
+    this.heightComparison = [];
+    this.weightComparison = [];
+  }
+  createCard() {
+    const humanCard = document.createElement("div");
+    humanCard.classList.add("grid-item");
+    humanCard.dataset.info = `Weight: ${this.weight} pounds, Height: ${this.height} inches`;
+    humanCard.innerHTML = `
+      <img src="/images/human.png" alt="human">
+      <h3>${this.name}</h3>`;
+    return humanCard;
   }
 }
+
 (() => {
   document.getElementById("btn").addEventListener("click", (e) => {
     e.preventDefault();
     toggle();
-    renderGrid();
+    drawCards();
   });
-
   document.getElementById("back").addEventListener("click", () => {
     toggle();
   });
 })();
+
+/**
+ * render grid of dino and human card
+ * @return void
+ */
+function drawCards() {
+  const fragment = document.createDocumentFragment();
+  const dinoObj = DinoJson.Dinos.map((dino) => {
+    return new Dino(dino);
+  });
+  const human = new Human(getUserInput());
+  dinoObj
+    .filter((dino) => !dino.compareHeight(human.height))
+    .map(({ species }) => human.weightComparison.push(species));
+  dinoObj
+    .filter((dino) => !dino.compareWeight(human.weight))
+    .map(({ species }) => human.weightComparison.push(species));
+  dinoObj.splice(4, 0, human);
+  dinoObj.map((obj) => {
+    fragment.appendChild(obj.createCard());
+  });
+  grid.appendChild(fragment);
+}
+/**
+ * toggle on and off gird of cards and reset
+ * @constructor object
+ * @return void
+ */
+function toggle() {
+  document.getElementById("back").classList.toggle("d-none");
+  document.getElementById("dino-compare").classList.toggle("d-none");
+  document.getElementById("grid").innerHTML = "";
+}
+
 /**
  * get user input from form and return info as object
  * @constructor object
@@ -48,60 +104,4 @@ function getUserInput() {
   const diet = document.getElementById("diet").value;
 
   return { weight, height: feet * 12 + inch, name, diet };
-}
-
-function renderGrid() {
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  const fragment = document.createDocumentFragment();
-  const human = new Human(getUserInput());
-  const collection = DinoJson.Dinos.map((dino) => {
-    return new Dino(dino);
-  });
-  human.taller = collection
-    .filter((dino) => !dino.compareHeight(human.height))
-    .map(({ species }) => species);
-  human.heavy = collection
-    .filter((dino) => !dino.compareWeight(human.weight))
-    .map(({ species }) => species);
-  collection.splice(4, 0, human);
-  collection.map((obj) => {
-    fragment.appendChild(createCard(obj));
-  });
-  grid.appendChild(fragment);
-}
-
-function createCard(obj) {
-  const card = document.createElement("div");
-  card.classList.add("grid-item");
-  card.innerHTML = `
-	<img src="/images/${String(obj?.species || "human").toLowerCase()}.png" alt="${
-    obj?.species
-  }">	
-		<h3>${obj?.species || obj?.name}</h3>
-	${
-    (obj?.species === "Pigeon" && "<p>All birds are Dinosaurs.</p>") ||
-    obj?.fact ||
-    ""
-  }
-  ${
-    obj instanceof Human &&
-    `You are taller than ${
-      (obj.taller.length > 1 && obj.taller.join(", ")) || "none of them"
-    }`
-  }
-  ${
-    obj instanceof Human &&
-    `And heavier than ${
-      (obj.heavy.length > 1 && obj.heavy.join(", ")) || "none of them"
-    }`
-  }
-`;
-  return card;
-}
-
-function toggle() {
-  document.getElementById("back").classList.toggle("d-none");
-  document.getElementById("dino-compare").classList.toggle("d-none");
-  grid.innerHTML = "";
 }
