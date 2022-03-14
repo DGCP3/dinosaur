@@ -1,4 +1,7 @@
 import DinoJson from "./dino.json" assert { type: "json" };
+const dinoObj = DinoJson.Dinos.map((dino) => {
+  return new Dino(dino);
+});
 /**
  * Represents a Dino object.
  * @constructor object
@@ -46,15 +49,10 @@ class Human {
  */
 function drawCards() {
   const fragment = document.createDocumentFragment();
-  const dinoObj = DinoJson.Dinos.map((dino) => {
-    return new Dino(dino);
-  });
   const human = new Human(getUserInput());
   dinoObj.forEach((dino) => {
-    !dino.compareHeight(human.height) &&
-      human.weightComparison.push(dino.species);
-    !dino.compareWeight(human.weight) &&
-      human.weightComparison.push(dino.species);
+    !dino.compareHeight(human.height) && human.heightComparison.push(dino.fact);
+    !dino.compareWeight(human.weight) && human.weightComparison.push(dino.fact);
   });
   shuffle(dinoObj);
   dinoObj.splice(4, 0, human);
