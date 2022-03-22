@@ -1,7 +1,5 @@
 import DinoJson from "./dino.json" assert { type: "json" };
-const dinoObj = DinoJson.Dinos.map((dino) => {
-  return new Dino(dino);
-});
+
 /**
  * Represents a Dino object.
  * @constructor object
@@ -24,6 +22,9 @@ class Dino {
  * Represents a Person object.
  * @constructor object
  */
+ const dinoObj = DinoJson.Dinos.map((dino) => {
+  return new Dino(dino);
+});
 class Human {
   constructor(args) {
     Object.assign(this, args);
